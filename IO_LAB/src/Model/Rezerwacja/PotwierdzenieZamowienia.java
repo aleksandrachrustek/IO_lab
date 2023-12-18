@@ -16,6 +16,6 @@ public class PotwierdzenieZamowienia {
 
     public PotwierdzenieZamowienia(List<Bilet> oplacone_bilety, float kwota, boolean doOplacenia, String nrKontaBank,
                                    Date dataWygenerowania, int idPotwierdzenia){}
-    public String wyswietlZawartosc(){return null;}
+    public String wyswietlZawartosc(){return nrKontaBank;}
     public String getIdPotwierdzenia(){return idPotwierdzenia;}
 }

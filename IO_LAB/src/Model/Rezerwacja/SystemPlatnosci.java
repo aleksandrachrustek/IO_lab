@@ -2,21 +2,16 @@ package Model.Rezerwacja;
 
 public class SystemPlatnosci {
     private float kwota;
-    private boolean czyPlatnoscKarta;
+    private boolean platnoscKarta;
 
-    public SystemPlatnosci(float kwota, boolean czyPlatnoscKarta){
+    public SystemPlatnosci(){
     };
 
     public WynikPlatnosci przetworzeniePlatnosci(float kwota, boolean czyPlatnoscKarta){
         return null;
     };
-    public boolean autoryzacjaBanku(){return false;}
-    public boolean getCzyPlatnoscKarta(){return czyPlatnoscKarta;}
+    private boolean autoryzacjaBanku(){return false;}
+    private boolean czyPlatnoscKarta(){return platnoscKarta;}
     public void wygenerujPotwierdzenie(){}
 }
 
- enum WynikPlatnosci{
-    BLAD_KARTA,
-     DO_OPLACENIA,
-     OPLACONA_KARTA
-}
