@@ -1,4 +1,4 @@
-package Controller;
+package Kontroler;
 
 import Model.Bilety.Bilet;
 import Model.Bilety.BiletLotniczy;
@@ -11,16 +11,16 @@ import Model.Rezerwacja.WynikPlatnosci;
 import Model.Rezerwacja.Zamowienie;
 import Model.SystemLogowania;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 public class Aplikacja {
-    static void main(String[] args){
+    public static void main(String[] args){
         Aplikacja app = new Aplikacja();
         app.zarzadzanieLotami();
-        //app.rezerwujBilety(123, 1);
+        app.rezerwujBilety(123, 2);
     }
     private ArrayList<Lot> katalogLotow = new ArrayList<>();
     private SystemLogowania sesjaUzytkownika = new SystemLogowania();
@@ -33,7 +33,7 @@ public class Aplikacja {
     public void rezerwujBilety(int nr_lotu, int iloscBiletow){
         Lot znalezionyLot = wyszukajLot(nr_lotu);
         if (znalezionyLot != null && katalogLotow.indexOf(znalezionyLot) != -1){
-            int iloscWolnychMiejsc = znalezionyLot.getIloscWolnychMiejsc();
+            int iloscWolnychMiejsc = 120;
             if (iloscWolnychMiejsc >= iloscBiletow){
                 ArrayList<Bilet> zamowioneBilety = new ArrayList<>();
                 for (int i = 0; i < iloscBiletow; i++){
@@ -45,12 +45,15 @@ public class Aplikacja {
                 boolean czyBiletParkingowy = true; // skad to wziac?
                 if (czyBiletParkingowy){
                     Date data1 = new Date();
-                    Date data2 = new Date(2025, 10, 20);
+                    Date data2 = new Date(225, 10, 20);
                     BiletParkingowy biletPark = new BiletParkingowy(22.5F, "Czlowiek ", "0",
                             "11223344556", TypBiletu.PARKINGOWY,"DWASDXD", data1, data2, '0');
                     zamowioneBilety.add(biletPark);
                 }
-                Zamowienie realizowaneZamowienie = new Zamowienie(zamowioneBilety);
+                for (Bilet b:zamowioneBilety) {
+                    System.out.println(b.toString());
+                }
+                realizowaneZamowienie = new Zamowienie(zamowioneBilety);
                 SystemPlatnosci systemPlatnosci = new SystemPlatnosci();
                 float obliczonaKwota = realizowaneZamowienie.obliczCalkowitaKwote();
                 realizowaneZamowienie.zrealizujZamowienie(obliczonaKwota, true, "21938018403");
@@ -73,7 +76,7 @@ public class Aplikacja {
                     String idPotwierdzenia = potwierdzenieZamowienia.getIdPotwierdzenia();
                     wyswietlPotwierdzenieZamowienia(idPotwierdzenia, zawartoscPotwierdzenia);
                     historiaZamowien.add(potwierdzenieZamowienia);
-
+                    System.out.println("Udalo sie dokonac zamowienia");
                 }
             }
             else{
@@ -87,15 +90,15 @@ public class Aplikacja {
 
     }
     private Lot wyszukajLot(int nrLotu){
-        return null;
+        return katalogLotow.get(0);
     }
     public void wyswietlPotwierdzenieZamowienia(String idPotwierdzenia, String zawartoscPotwierdzenia){}
     public void zarzadzanieLotami(){
         SystemLogowania sl = new SystemLogowania();
         int iloscProb = 0;
         System.out.println("Podaj login i haslo");
-        String login = System.in.toString();
-        String haslo = System.in.toString();
+        String login = "login";
+        String haslo = "haslo";
         if (!sl.zaloguj(login, haslo)){
             wyswietlBlad("bledne logowanie");
             iloscProb++;
@@ -108,9 +111,10 @@ public class Aplikacja {
             int wybor;
             do {
                 wyswietlMenuZarzadzania(username);
-                wybor = Integer.parseInt(System.in.toString());
+                Scanner scanner = new Scanner(System.in);
+                wybor = scanner.nextInt();
                 if (wybor == 1) {
-                    String[] dane = new String[]{"123", "123", "123"};
+                    String[] dane = new String[]{"123", "Wroclaw", "Moskwa"};
                     if (sprawdzPoprawnoscDanychLot(dane)) {
                         Lot lot = new Lot(dane);
                         katalogLotow.add(lot);

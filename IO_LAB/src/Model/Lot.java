@@ -15,7 +15,11 @@ public class Lot {
     public Lot(int nr_lotu, int iloscMiejsc, int iloscWolnychMiejsc, String lotnisko_poczatkowe,
                String lotnisko_docelowe, Date data_wylotu, String przewoznik, float cenaZaMiejsce){
     }
-    public Lot(String[] informacjeOLocie){}
+    public Lot(String[] informacjeOLocie){
+        this.nr_lotu = Integer.parseInt(informacjeOLocie[0]);
+        this.lotnisko_poczatkowe = informacjeOLocie[1];
+        this.lotnisko_docelowe = informacjeOLocie[2];
+    }
     public int getNrLotu(){return nr_lotu;}
     public int getIloscMiejsc(){return iloscMiejsc;}
     public int getIloscWolnychMiejsc(){return iloscWolnychMiejsc;}
@@ -24,4 +28,13 @@ public class Lot {
     public Date getData_wylotu(){return data_wylotu;}
     public String getPrzewoznik(){return przewoznik;}
     public float getCenaZaMiejsce(){return cenaZaMiejsce;}
+
+    @Override
+    public String toString() {//metoda na potrzeby testow
+        return "Lot{" +
+                "nr=" + nr_lotu +
+                ", lotnisko poczatkowe='" + lotnisko_poczatkowe + '\'' +
+                ", lotnisko docelowe='" + lotnisko_docelowe + '\'' +
+                '}';
+    }
 }

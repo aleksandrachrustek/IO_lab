@@ -11,7 +11,12 @@ public class BiletParkingowy extends Bilet {
     public BiletParkingowy(float cena, String imie, String nazwisko, String pesel, TypBiletu typ,
                            String nr_rejestracyjny, Date data_rozpoczecia, Date data_zakonczenia,
                            char strefa) {
-        super(cena, imie, nazwisko, pesel, typ);}
+        super(cena, imie, nazwisko, pesel, typ);
+        this.nr_rejestracyjny = nr_rejestracyjny;
+        this.data_rozpoczecia = data_rozpoczecia;
+        this.data_zakonczenia = data_zakonczenia;
+        this.strefa = strefa;
+    }
 
     public String wypiszInformacje(){
         super.wypiszInformacje();

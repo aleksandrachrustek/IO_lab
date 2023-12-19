@@ -14,7 +14,15 @@ public class BiletLotniczy extends Bilet {
     public BiletLotniczy(float cena, String imie, String nazwisko, String pesel, TypBiletu typ,
                       Date data_wylotu, String miejsceWSamolocie, String lotniskoPocz,
                       String lotniskoDocelowe, String nrLotu, String przewoznik) {
-        super(cena, imie, nazwisko, pesel, typ);}
+        super(cena, imie, nazwisko, pesel, typ);
+        this.data_wylotu = data_wylotu;
+        this.miejsce_w_samolocie = miejsceWSamolocie;
+        this.lotnisko_poczatkowe = lotniskoPocz;
+        this.lotnisko_docelowe = lotniskoDocelowe;
+        this.nr_lotu = Integer.parseInt(nrLotu);
+        this.przewoznik = przewoznik;
+
+    }
 
     public Date getData_wylotu(){return data_wylotu;}
     public String getMiejsce_w_samolocie(){return miejsce_w_samolocie;}
