@@ -57,7 +57,6 @@ public class Aplikacja {
                 SystemPlatnosci systemPlatnosci = new SystemPlatnosci();
                 float obliczonaKwota = realizowaneZamowienie.obliczCalkowitaKwote();
                 realizowaneZamowienie.zrealizujZamowienie(obliczonaKwota, true, "21938018403");
-                //nie rozumiem czemu tak, skoro i tak zwracamy typ PotwierdzenieZamowienia nizej w "wygenerujPotwierdzenie"
                 WynikPlatnosci wynikPlatnosci = systemPlatnosci.przetworzeniePlatnosci(obliczonaKwota, true);
                 boolean platnoscUdana;
                 if (wynikPlatnosci == WynikPlatnosci.OPLACONA_KARTA){
@@ -70,9 +69,9 @@ public class Aplikacja {
 
                 }
                 PotwierdzenieZamowienia potwierdzenieZamowienia =
-                        realizowaneZamowienie.wygenerujPotwierdzenie(wynikPlatnosci, obliczonaKwota); //to musialem zrobic public
+                        realizowaneZamowienie.wygenerujPotwierdzenie(wynikPlatnosci, obliczonaKwota);
                 if(potwierdzenieZamowienia != null){
-                    String zawartoscPotwierdzenia = potwierdzenieZamowienia.wyswietlZawartosc();//to wyglada na diagramie jakby ta metoda należała do Aplikacji, a nie do Potwierdzenia
+                    String zawartoscPotwierdzenia = potwierdzenieZamowienia.wyswietlZawartosc();
                     String idPotwierdzenia = potwierdzenieZamowienia.getIdPotwierdzenia();
                     wyswietlPotwierdzenieZamowienia(idPotwierdzenia, zawartoscPotwierdzenia);
                     historiaZamowien.add(potwierdzenieZamowienia);
