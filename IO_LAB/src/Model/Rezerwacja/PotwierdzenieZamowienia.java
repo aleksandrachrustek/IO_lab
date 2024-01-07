@@ -12,10 +12,10 @@ public class PotwierdzenieZamowienia {
     private float kwota;
     private String nrKontaBank;
     private Date dataWygenerowania;
-    private String idPotwierdzenia;
+    private int idPotwierdzenia;
 
     public PotwierdzenieZamowienia(List<Bilet> oplacone_bilety, float kwota, boolean doOplacenia, String nrKontaBank,
                                    Date dataWygenerowania, int idPotwierdzenia){}
     public String wyswietlZawartosc(){return nrKontaBank;}
-    public String getIdPotwierdzenia(){return idPotwierdzenia;}
+    public int getIdPotwierdzenia(){return 0;}
 }

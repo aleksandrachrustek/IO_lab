@@ -33,7 +33,7 @@ public class Aplikacja {
     public void rezerwujBilety(int nr_lotu, int iloscBiletow){
         Lot znalezionyLot = wyszukajLot(nr_lotu);
         if (znalezionyLot != null && katalogLotow.indexOf(znalezionyLot) != -1){
-            int iloscWolnychMiejsc = 120;
+            int iloscWolnychMiejsc = znalezionyLot.getIloscWolnychMiejsc();
             if (iloscWolnychMiejsc >= iloscBiletow){
                 ArrayList<Bilet> zamowioneBilety = new ArrayList<>();
                 for (int i = 0; i < iloscBiletow; i++){
@@ -41,101 +41,102 @@ public class Aplikacja {
                             "11223344556", TypBiletu.LOTNICZY, new Date(), "22 pod oknem",
                             "Wroclaw", "Moskwa", String.valueOf(nr_lotu), "Ryanair");
                     zamowioneBilety.add(biletLotniczy);
+                    boolean czyBiletParkingowy = true;
+                    if (czyBiletParkingowy){
+                        BiletParkingowy biletPark = new BiletParkingowy(22.5F, "Czlowiek ", String.valueOf(i),
+                                "11223344556", TypBiletu.PARKINGOWY,"DWASDXD", new Date(), new Date(225, 10, 20), '0');
+                        zamowioneBilety.add(biletPark);
+                    }
                 }
-                boolean czyBiletParkingowy = true; // skad to wziac?
-                if (czyBiletParkingowy){
-                    Date data1 = new Date();
-                    Date data2 = new Date(225, 10, 20);
-                    BiletParkingowy biletPark = new BiletParkingowy(22.5F, "Czlowiek ", "0",
-                            "11223344556", TypBiletu.PARKINGOWY,"DWASDXD", data1, data2, '0');
-                    zamowioneBilety.add(biletPark);
-                }
+                //to dla testów:
                 for (Bilet b:zamowioneBilety) {
                     System.out.println(b.toString());
                 }
+
                 realizowaneZamowienie = new Zamowienie(zamowioneBilety);
                 SystemPlatnosci systemPlatnosci = new SystemPlatnosci();
                 float obliczonaKwota = realizowaneZamowienie.obliczCalkowitaKwote();
+                boolean czyPlatnoscKarta = systemPlatnosci.platnoscKarta;
                 realizowaneZamowienie.zrealizujZamowienie(obliczonaKwota, true, "21938018403");
                 WynikPlatnosci wynikPlatnosci = systemPlatnosci.przetworzeniePlatnosci(obliczonaKwota, true);
-                boolean platnoscUdana;
-                if (wynikPlatnosci == WynikPlatnosci.OPLACONA_KARTA){
-                    platnoscUdana = true;
-                }
-                else if (wynikPlatnosci == WynikPlatnosci.BLAD_KARTA){
-                    platnoscUdana = false;
-                }
-                else if (wynikPlatnosci == WynikPlatnosci.DO_OPLACENIA){
 
-                }
                 PotwierdzenieZamowienia potwierdzenieZamowienia =
                         realizowaneZamowienie.wygenerujPotwierdzenie(wynikPlatnosci, obliczonaKwota);
+
                 if(potwierdzenieZamowienia != null){
                     String zawartoscPotwierdzenia = potwierdzenieZamowienia.wyswietlZawartosc();
-                    String idPotwierdzenia = potwierdzenieZamowienia.getIdPotwierdzenia();
-                    wyswietlPotwierdzenieZamowienia(idPotwierdzenia, zawartoscPotwierdzenia);
+                    int idPotwierdzenia = potwierdzenieZamowienia.getIdPotwierdzenia();
+                    wyswietlPotwierdzenie(idPotwierdzenia, zawartoscPotwierdzenia);
                     historiaZamowien.add(potwierdzenieZamowienia);
                     System.out.println("Udalo sie dokonac zamowienia");
                 }
+                else{
+                    wyswietlBlad("Nie udalo sie wygenerowac potwierdzenia");
+                }
             }
-            else{
-                wyswietlBlad("brak miejsc");
-            }
-
-        }
-        else{
-            wyswietlBlad("nie znaleziono lotu");
         }
 
     }
     private Lot wyszukajLot(int nrLotu){
+        //na potrzeby testow
         return katalogLotow.get(0);
     }
-    public void wyswietlPotwierdzenieZamowienia(String idPotwierdzenia, String zawartoscPotwierdzenia){}
+    public void wyswietlPotwierdzenie(int idPotwierdzenia, String zawartoscPotwierdzenia){}
     public void zarzadzanieLotami(){
-        SystemLogowania sl = new SystemLogowania();
-        int iloscProb = 0;
-        System.out.println("Podaj login i haslo");
-        String login = "login";
-        String haslo = "haslo";
-        if (!sl.zaloguj(login, haslo)){
-            wyswietlBlad("bledne logowanie");
-            iloscProb++;
-            if(iloscProb == 3){
-                return;
+        int bledneProby = 0;
+        boolean Zalogowany = false;
+        while(bledneProby < 3 && !Zalogowany){
+            //na potrzeby testow
+            System.out.println("Podaj login i haslo");
+            String login = "login";
+            String haslo = "haslo";
+            //
+            Zalogowany = sesjaUzytkownika.zaloguj(login, haslo);
+            if (!Zalogowany){
+                wyswietlBlad("bledne logowanie");
+                bledneProby++;
+                if(bledneProby == 3){
+                    return;
+                }
             }
         }
-        else{
-            String username = sl.getUsername();
-            int wybor;
-            do {
-                wyswietlMenuZarzadzania(username);
-                Scanner scanner = new Scanner(System.in);
-                wybor = scanner.nextInt();
-                if (wybor == 1) {
-                    String[] dane = new String[]{"123", "Wroclaw", "Moskwa"};
-                    if (sprawdzPoprawnoscDanychLot(dane)) {
-                        Lot lot = new Lot(dane);
-                        katalogLotow.add(lot);
-                        for (Lot l : katalogLotow) {
-                            System.out.println(l.toString());
-                        }
+        String Username = sesjaUzytkownika.getUsername();
+        int choice;
+        do {
+            wyswietlMenuZarzadzania(Username);
+            //na potrzeby testow
+            Scanner scanner = new Scanner(System.in);
+            choice = scanner.nextInt();
+            //
+            if (choice == 1) {
+                String[] informacjeOLocie = new String[]{"123", "Wroclaw", "Moskwa"}; //dane na potrzeby testow
+                boolean czyPoprawneDane = sprawdzPoprawnoscDanychLot(informacjeOLocie);
+                if (czyPoprawneDane) {
+                    Lot utworzony = new Lot(informacjeOLocie);
+                    katalogLotow.add(utworzony);
+                    //wyswietlenie lotów na potrzeby testow
+                    for (Lot l : katalogLotow) {
+                        System.out.println(l.toString());
                     }
-                    ;
-                } else if (wybor == 2) {
-                    String parametrWyszukiwania = "123";
-                    ArrayList<Lot> znalezioneLoty = wyszukajLotParametr(parametrWyszukiwania);
-                    wyswietlListeLotow(znalezioneLoty);
-                } else if (wybor == 3) {
-                    edytujLot(123, "123", "123");
+                    //
                 }
-                else{
-
+                ;
+            } else if (choice == 2) {
+                String parametrWyszukiwania = "123"; // na potrzeby testu
+                ArrayList<Lot> lotyDoWyswietlenia = wyszukajLotParametr(parametrWyszukiwania);
+                wyswietlListeLotow(lotyDoWyswietlenia);
+            } else if (choice == 3) {
+                boolean bladEdycji = edytujLot(123, "123", "123"); // dane na potrzeby testow
+                if (bladEdycji){
+                    wyswietlBlad("Nie udalo sie edytowac lotu");
                 }
-            } while (wybor != 0);
-            if(wybor == 0){
-                sl.wyloguj();
             }
+            else{
+
+            }
+        } while (choice != 0);
+        if(choice == 0){
+            sesjaUzytkownika.wyloguj();
         }
     }
     private void wyswietlMenuZarzadzania(String loggedAs){
@@ -153,6 +154,6 @@ public class Aplikacja {
             System.out.println(l.toString());
         }
     }
-    private boolean edytujLot(int nrLotu, String parametr, String wartosc){return false;}
+    private boolean edytujLot(int nrLotu, String parametr, String wartosc){return true;}
     private void wyswietlBlad(String komunikat){}
 }
